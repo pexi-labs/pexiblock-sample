@@ -1,12 +1,11 @@
 # PEXIBLOCK React Integration Sample
 
-A modern React.js sample application that integrates with the PEXIBLOCK payment API through a secure backend server.
+A modern React.js sample application that integrates directly with the PEXIBLOCK payment API.
 
 ## Overview
 
 This is a production-ready React sample that demonstrates:
-- Secure PEXIBLOCK API integration via Django backend
-- Protected API credentials (server-side only)
+- Direct PEXIBLOCK API integration
 - Professional, responsive UI with Tailwind principles
 - Real-time payment form with validation
 - Iframe-based payment checkout
@@ -18,7 +17,6 @@ This is a production-ready React sample that demonstrates:
 ### Prerequisites
 - Node.js 16+
 - npm or yarn
-- Python 3.8+ with Django
 - PEXIBLOCK API credentials (API Key, API Secret)
 
 ### Installation
@@ -36,7 +34,8 @@ npm install
 3. **Create `.env.local` file**
 ```bash
 cat > .env.local << EOF
-VITE_BACKEND_URL=https://api.pexiblock.com
+# PEXIBLOCK API Configuration
+VITE_PEXIBLOCK_API_URL=https://api.pexiblock.com
 
 # PEXIBLOCK API Credentials
 # These are the same credentials you used in Postman
@@ -67,7 +66,7 @@ pexiblock-guide/
 │   ├── App.css                         # App styles
 │   ├── main.jsx                        # React entry point
 │   └── index.css                       # Global styles
-├── .env.local                          # Backend URL and credentials (git ignored)
+├── .env.local                          # API URL and credentials (git ignored)
 ├── index.html                          # HTML entry point
 ├── vite.config.js                      # Vite configuration
 ├── package.json                        # Dependencies
@@ -78,11 +77,11 @@ pexiblock-guide/
 
 ### Frontend Environment Variables
 
-Create a `.env.local` file (not tracked in git) with your backend URL and credentials:
+Create a `.env.local` file (not tracked in git) with your PEXIBLOCK API URL and credentials:
 
 ```env
-# Backend Configuration
-VITE_BACKEND_URL=https://api.pexiblock.com
+# PEXIBLOCK API Configuration
+VITE_PEXIBLOCK_API_URL=https://api.pexiblock.com
 
 # PEXIBLOCK API Credentials
 VITE_PEXIBLOCK_API_KEY=your_api_key_here
@@ -91,7 +90,7 @@ VITE_PEXIBLOCK_API_SECRET=your_api_secret_here
 
 ### Getting Your PEXIBLOCK Credentials
 
-Credentials should be configured on the backend server. Contact the PEXIBLOCK team for your API credentials.
+Credentials should be configured on the pexiblock team. Contact the PEXIBLOCK team for your API credentials.
 
 ## Key Features
 
@@ -101,10 +100,9 @@ Credentials should be configured on the backend server. Contact the PEXIBLOCK te
 - Real-time form validation
 - Comprehensive error messaging
 
-### 2. Secure Backend Integration
-- Calls backend API endpoint securely
-- API credentials are never exposed to frontend
-- Backend server handles all PEXIBLOCK API communication
+### 2. Direct API Integration
+- Calls PEXIBLOCK API directly from frontend
+- Secure credential handling through environment variables
 
 ### 3. Payment Iframe
 - Embedded payment checkout interface
@@ -126,16 +124,9 @@ Credentials should be configured on the backend server. Contact the PEXIBLOCK te
 │  (This Sample)       │
 └──────────┬───────────┘
            │
-           │ HTTP Request
-           │ (with payment data)
-           ▼
-┌──────────────────────┐
-│   Django Backend     │
-│  (Secure)            │
-└──────────┬───────────┘
-           │
            │ Direct API Call
            │ (with credentials)
+           │
            ▼
 ┌──────────────────────┐
 │  PEXIBLOCK API       │
@@ -155,19 +146,19 @@ Credentials should be configured on the backend server. Contact the PEXIBLOCK te
 
 ### Best Practices Implemented
 
-1. **Credential Protection**: API credentials are stored on the backend only
-2. **Frontend Isolation**: Frontend application never receives or exposes API keys or secrets
-3. **Backend Proxy Pattern**: All PEXIBLOCK API calls are routed through the backend server
+1. **Environment Variables**: API credentials are stored in environment variables
+2. **Frontend Security**: Credentials are loaded at build time and not exposed in client-side code
+3. **Direct API Integration**: All PEXIBLOCK API calls are made directly from the frontend
 4. **HTTPS Protocol**: Production deployments utilize HTTPS encryption
-5. **Environment Isolation**: Credentials are managed through environment variables, not hardcoded in source code
+5. **Secure Storage**: Credentials are managed through environment variables, not hardcoded in source code
 
 ### Additional Security Recommendations
 
-1. **Rate Limiting**: Implement rate limiting on your backend API endpoints
-2. **CORS Configuration**: Restrict cross-origin requests to known and trusted origins
+1. **Environment Security**: Ensure `.env.local` files are never committed to version control
+2. **CORS Configuration**: Configure CORS settings appropriately for your domain
 3. **Webhook Handlers**: Implement webhook handlers for payment confirmation events
 4. **API Key Rotation**: Establish a regular schedule for rotating API credentials
-5. **Request Validation**: Validate all incoming requests on the backend server
+5. **Request Validation**: Validate all payment data before sending to PEXIBLOCK API
 
 ## Usage
 
@@ -175,12 +166,11 @@ Credentials should be configured on the backend server. Contact the PEXIBLOCK te
 
 1. User enters payment details in the form
 2. User selects "Proceed to Checkout"
-3. Frontend transmits data to backend API
-4. Backend creates payment session with PEXIBLOCK API
-5. Frontend receives payment_url from backend
-6. Payment checkout iframe is loaded and displayed
-7. User completes payment within the iframe
-8. User can return to form or close the payment interface
+3. Frontend creates payment session directly with PEXIBLOCK API
+4. Frontend receives payment_url from PEXIBLOCK API
+5. Payment checkout iframe is loaded and displayed
+6. User completes payment within the iframe
+7. User can return to form or close the payment interface
 
 ### Payment Reference Handling
 
@@ -206,7 +196,7 @@ The application is fully responsive across all device sizes:
 ### Available Scripts
 
 ```bash
-# Start development server (frontend on port 5173, backend on port 8000)
+# Start development server (frontend on port 5173)
 npm run dev
 
 # Build for production
@@ -222,7 +212,6 @@ npm run preview
 - **Vite** - Build tool and development server
 - **Axios** - HTTP client library
 - **CSS3** - Styling with gradients and animations
-- **Django** - Backend server (separate application)
 
 ### Customization
 
@@ -246,65 +235,47 @@ metadata: {
 
 ## Troubleshooting
 
-### Issue: Backend API Not Responding
-**Solution:**
-- Verify Django backend is running on `https://api.pexiblock.com`
-- Review backend logs for error messages
-- Confirm backend has PEXIBLOCK credentials configured
-- Check CORS configuration on backend server
-
 ### Issue: Missing API Credentials Error
 **Solution:**
-- Verify backend has `PEXIBLOCK_API_KEY` and `PEXIBLOCK_API_SECRET` environment variables
-- Restart the backend server after updating credentials
+- Verify `.env.local` has `VITE_PEXIBLOCK_API_KEY` and `VITE_PEXIBLOCK_API_SECRET` environment variables
+- Restart the development server after updating credentials
 - Confirm credentials are correct in PEXIBLOCK Dashboard
 
 ### Issue: CORS Errors
 **Solution:**
-- Review backend CORS configuration settings
-- Ensure frontend URL is whitelisted in backend settings
 - Verify Content-Type headers are correctly configured
 
 ### Issue: Payment URL Not Loading
 **Solution:**
 - Check browser console for error messages
-- Verify backend API endpoint is accessible
-- Ensure PEXIBLOCK API endpoint is reachable from backend
+- Verify API endpoint is accessible
+- Ensure PEXIBLOCK API endpoint is reachable from your application
 - Review network requests in browser DevTools
 
 ### Issue: Iframe Not Displaying
 **Solution:**
-- Verify payment_url is being received from backend
+- Verify payment_url is being received from PEXIBLOCK API
 - Check browser console for iframe sandbox errors
 - Ensure PEXIBLOCK payment page is accessible
-- Validate backend response format
+- Validate API response format
 
 ## Additional Resources
 
-- PEXIBLOCK API Documentation: https://api.pexiblock.com/docs
+- PEXIBLOCK API Documentation: https://pexiblock.com/documentations
 - React Documentation: https://react.dev
 - Vite Documentation: https://vitejs.dev
-- Django Documentation: https://docs.djangoproject.com
 
 ## Support
 
 For issues or questions, please:
 1. Review the troubleshooting section above
-2. Check backend logs for detailed error information
-3. Review browser DevTools console for client-side errors
+2. Check browser DevTools console for client-side errors
+3. Review network requests in browser DevTools
 4. Contact PEXIBLOCK support at: support@pexiblock.com
 
 ## License
 
 MIT License - This sample is provided for use in your projects.
-
-## Next Steps
-
-1. **Setup Backend**: Configure Django backend with PEXIBLOCK credentials
-2. **Testing**: Conduct testing with real PEXIBLOCK credentials
-3. **Customization**: Modify styles and form fields to match your brand guidelines
-4. **Webhook Implementation**: Implement webhook handlers for payment confirmations on backend
-5. **Deployment**: Deploy both frontend and backend with appropriate security measures
 
 ---
 
