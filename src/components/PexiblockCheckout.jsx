@@ -49,7 +49,13 @@ export const PexiblockCheckout = () => {
         await createPayment(formData)
     }
 
-    // Iframe View
+    const handleOpenPaymentWindow = () => {
+        if (paymentUrl) {
+            window.open(paymentUrl, 'pexiblock-checkout', 'width=900,height=700,left=200,top=100,toolbar=no,location=no,menubar=no,status=no,resizable=yes,scrollbars=yes')
+        }
+    }
+
+    // Popup View
     if (paymentUrl) {
         return (
             <div className="payment-container">
@@ -71,15 +77,22 @@ export const PexiblockCheckout = () => {
                         </div>
                     )}
 
-                    <div className="iframe-container">
-                        <iframe
-                            src={paymentUrl}
-                            title="PEXIBLOCK Checkout"
-                            className="payment-iframe"
-                            frameBorder="0"
-                            allowFullScreen
-                            allow="payment"
-                        ></iframe>
+                    <div className="popup-container">
+                        <div className="popup-message">
+                            <p>Your payment window is ready!</p>
+                            <p className="popup-description">Click the button below to open the secure payment checkout.</p>
+                        </div>
+
+                        <button
+                            className="open-payment-btn"
+                            onClick={handleOpenPaymentWindow}
+                        >
+                            💳 Open Payment Checkout
+                        </button>
+
+                        <p className="popup-note">
+                            If the window doesn't open automatically, please check your browser's popup settings.
+                        </p>
                     </div>
 
                     <button
